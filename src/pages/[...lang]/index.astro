@@ -1,0 +1,69 @@
+---
+import { allLocales } from '@/config'
+import { getLangRouteParam } from '@/i18n/lang'
+import { getLocalizedPath } from '@/i18n/path'
+import Layout from '@/layouts/Layout.astro'
+import { getWordPressPosts, isCollectionPost, isGalleryPost } from '@/utils/wordpress'
+
+export async function getStaticPaths() {
+  return allLocales.map(lang => ({ params: { lang: getLangRouteParam(lang) } }))
+}
+
+const posts = await getWordPressPosts()
+const collectionPosts = posts.filter(isCollectionPost)
+const galleryPosts = posts.filter(isGalleryPost)
+const regularPosts = posts.filter(post => !isCollectionPost(post) && !isGalleryPost(post))
+---
+
+<Layout>
+  <section class="home-intro">
+    <p class="eyebrow">PERSONAL ARCHIVE · 2026</p>
+    <h1>写给日落之后的<br /><em>一些话</em></h1>
+    <p class="intro-copy">这里是 lanran 的文字、随笔与影像记录。</p>
+    <div class="intro-rule" />
+  </section>
+
+  {collectionPosts.length > 0 && (
+    <section class="editorial-feature">
+      <div>
+        <p class="eyebrow">COLLECTION</p>
+        <h2><a href={getLocalizedPath('/collections/forty-fifth-sunset')}>第四十五次日落</a></h2>
+        <p>一组关于时间、成长与记忆的文字。</p>
+      </div>
+      <span class="feature-count">{collectionPosts.length} 篇</span>
+    </section>
+  )}
+
+  <section class="post-archive heti">
+    <div class="section-heading">
+      <span class="eyebrow">WRITING</span>
+      <a href={getLocalizedPath('/writing')}>查看全部 →</a>
+    </div>
+    {regularPosts.length === 0 ? (
+      <p class="empty-state">文章正在整理中。</p>
+    ) : (
+      <ol class="archive-list">
+        {regularPosts.slice(0, 12).map(post => (
+          <li>
+            <a href={getLocalizedPath(`/posts/${post.route}`)}>
+              <span class="archive-title">{post.title}</span>
+              <time datetime={post.date}>{new Date(post.date).toLocaleDateString('zh-CN')}</time>
+            </a>
+            {post.excerpt && <p>{post.excerpt}</p>}
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+
+  {galleryPosts.length > 0 && (
+    <section class="editorial-feature blue-feature">
+      <div>
+        <p class="eyebrow">PHOTOGRAPHY</p>
+        <h2><a href={getLocalizedPath('/photos')}>摄影集</a></h2>
+        <p>光线、街道，以及被按下快门的片刻。</p>
+      </div>
+      <span class="feature-count">{galleryPosts.length} 组</span>
+    </section>
+  )}
+</Layout>

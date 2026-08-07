@@ -1,0 +1,32 @@
+---
+import { allLocales } from '@/config'
+import { getLangRouteParam } from '@/i18n/lang'
+import { getLocalizedPath } from '@/i18n/path'
+import Layout from '@/layouts/Layout.astro'
+import { getWordPressPosts, isGalleryPost } from '@/utils/wordpress'
+
+export async function getStaticPaths() {
+  return allLocales.map(lang => ({ params: { lang: getLangRouteParam(lang) } }))
+}
+
+const posts = (await getWordPressPosts()).filter(post => !isGalleryPost(post))
+---
+
+<Layout>
+  <section class="heti archive-page">
+    <p class="eyebrow">WRITING</p>
+    <h1>文章与随笔</h1>
+    <p class="archive-lead">长短不一的文字，按时间留存在这里。</p>
+    <ol class="archive-list">
+      {posts.map(post => (
+        <li>
+          <a href={getLocalizedPath(`/posts/${post.route}`)}>
+            <span class="archive-title">{post.title}</span>
+            <time datetime={post.date}>{new Date(post.date).toLocaleDateString('zh-CN')}</time>
+          </a>
+          {post.excerpt && <p>{post.excerpt}</p>}
+        </li>
+      ))}
+    </ol>
+  </section>
+</Layout>

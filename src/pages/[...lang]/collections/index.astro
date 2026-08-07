@@ -1,0 +1,30 @@
+---
+import { allLocales } from '@/config'
+import { getLangRouteParam } from '@/i18n/lang'
+import { getLocalizedPath } from '@/i18n/path'
+import Layout from '@/layouts/Layout.astro'
+import { getWordPressCollections } from '@/utils/wordpress'
+
+export async function getStaticPaths() {
+  return allLocales.map(lang => ({ params: { lang: getLangRouteParam(lang) } }))
+}
+
+const collections = await getWordPressCollections()
+---
+
+<Layout>
+  <section class="heti archive-page">
+    <p class="eyebrow">COLLECTIONS</p>
+    <h1>文集</h1>
+    {collections.length === 0 ? (
+      <div class="editorial-feature">
+        <div><h2>第四十五次日落</h2><p>文章正在迁入 WordPress，完成后会在这里出现。</p></div>
+      </div>
+    ) : collections.map(collection => (
+      <a class="editorial-feature" href={getLocalizedPath(`/collections/${collection.slug}`)}>
+        <div><h2>{collection.title}</h2><p>{collection.description}</p></div>
+        <span class="feature-count">{collection.posts.length} 篇</span>
+      </a>
+    ))}
+  </section>
+</Layout>

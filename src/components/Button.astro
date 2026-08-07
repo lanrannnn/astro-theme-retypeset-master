@@ -1,0 +1,38 @@
+---
+import type { Language } from '@/i18n/config'
+import LanguageSwitcherIcon from '@/assets/icons/language-switcher.svg'
+import { moreLocales } from '@/config'
+import { getNextGlobalLangPath, getNextSupportedLangPath } from '@/i18n/path'
+
+interface Props { supportedLangs: Language[] }
+const { supportedLangs } = Astro.props
+const currentPath = Astro.url.pathname
+const showLanguageSwitcher = moreLocales.length > 0
+const nextUrl = supportedLangs.length > 0
+  ? getNextSupportedLangPath(currentPath, supportedLangs)
+  : getNextGlobalLangPath(currentPath)
+---
+
+<div class="palette-controls">
+  {showLanguageSwitcher && (
+    <a id="language-switcher" href={nextUrl} class="aspect-square w-4 c-secondary active:scale-90 hover:c-primary" aria-label="切换语言">
+      <LanguageSwitcherIcon aria-hidden="true" fill="currentColor" />
+    </a>
+  )}
+  <button id="palette-toggle-button" class="palette-toggle" aria-label="切换暖色与蓝色色调" title="切换色调">
+    <span class="palette-dot warm-dot" />
+    <span class="palette-dot blue-dot" />
+  </button>
+</div>
+
+<script>
+function handlePaletteToggle(event: MouseEvent) {
+  if (!(event.target instanceof Element) || !event.target.closest('#palette-toggle-button')) return
+  const nextPalette = document.documentElement.dataset.palette === 'blue' ? 'warm' : 'blue'
+  document.documentElement.dataset.palette = nextPalette
+  localStorage.setItem('palette', nextPalette)
+  document.dispatchEvent(new Event('theme-changed'))
+}
+
+document.addEventListener('click', handlePaletteToggle)
+</script>

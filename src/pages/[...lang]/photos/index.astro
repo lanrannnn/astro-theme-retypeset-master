@@ -1,0 +1,34 @@
+---
+import { allLocales } from '@/config'
+import { getLangRouteParam } from '@/i18n/lang'
+import { getLocalizedPath } from '@/i18n/path'
+import Layout from '@/layouts/Layout.astro'
+import { getWordPressGalleries } from '@/utils/wordpress'
+
+export async function getStaticPaths() {
+  return allLocales.map(lang => ({ params: { lang: getLangRouteParam(lang) } }))
+}
+
+const galleries = await getWordPressGalleries()
+---
+
+<Layout>
+  <section class="heti archive-page">
+    <p class="eyebrow">PHOTOGRAPHY</p>
+    <h1>摄影集</h1>
+    <p class="archive-lead">用光线保存那些无法准确描述的瞬间。</p>
+    {galleries.length === 0 ? (
+      <p class="empty-state">还没有发布摄影集。在 WordPress 中给文章添加“摄影集”分类后，它会出现在这里。</p>
+    ) : (
+      <div class="photo-grid">
+        {galleries.map(gallery => (
+          <a href={getLocalizedPath(`/photos/${gallery.route}`)}>
+            {gallery.image ? <img src={gallery.image.src} alt={gallery.image.alt} loading="lazy" /> : <div class="photo-placeholder" />}
+            <h2>{gallery.title}</h2>
+            <time datetime={gallery.date}>{new Date(gallery.date).toLocaleDateString('zh-CN')}</time>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+</Layout>

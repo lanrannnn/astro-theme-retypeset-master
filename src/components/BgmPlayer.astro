@@ -1,0 +1,24 @@
+---
+interface Props {
+  track?: {
+    title: string
+    artist?: string
+    loop?: boolean
+    src?: string
+  }
+}
+
+const {track} = Astro.props
+---
+
+{track?.src && (
+  <section class="my-8 border-y border-secondary/15 py-4" aria-label="Background music">
+    <div class="mb-2 flex items-baseline justify-between gap-4">
+      <p class="m-0 text-sm font-semibold c-primary">{track.title}</p>
+      {track.artist && <p class="m-0 text-sm c-secondary/75">{track.artist}</p>}
+    </div>
+    <audio controls preload="metadata" loop={track.loop ?? false} class="w-full" src={track.src}>
+      Your browser does not support audio playback.
+    </audio>
+  </section>
+)}

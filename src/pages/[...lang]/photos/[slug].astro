@@ -1,0 +1,23 @@
+---
+import { getLangRouteParam } from '@/i18n/lang'
+import Layout from '@/layouts/Layout.astro'
+import { getWordPressGalleries, getWordPressGallery } from '@/utils/wordpress'
+
+export async function getStaticPaths() {
+  const galleries = await getWordPressGalleries()
+  return galleries.map(gallery => ({ params: { lang: getLangRouteParam('zh'), slug: gallery.route } }))
+}
+
+const slug = Astro.params.slug ?? ''
+const gallery = await getWordPressGallery(slug)
+if (!gallery) throw new Error(`WordPress gallery not found: ${slug}`)
+---
+
+<Layout postTitle={gallery.title} postDescription={gallery.excerpt}>
+  <article class="heti wordpress-article photo-article">
+    <p class="eyebrow">PHOTOGRAPHY</p>
+    <h1 class="post-title">{gallery.title}</h1>
+    <time class="post-meta" datetime={gallery.date}>{new Date(gallery.date).toLocaleDateString('zh-CN')}</time>
+    <div class="wordpress-content" set:html={gallery.content} />
+  </article>
+</Layout>
