@@ -19,7 +19,13 @@ import { remarkContainerDirectives } from './src/plugins/remark-container-direct
 import { remarkLeafDirectives } from './src/plugins/remark-leaf-directives.mjs'
 import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs'
 
-const { url: site } = themeConfig.site
+const { url: configuredSite } = themeConfig.site
+const site = process.env.PUBLIC_SITE_URL || configuredSite
+const deploymentBase = process.env.PUBLIC_BASE_PATH
+  ? process.env.PUBLIC_BASE_PATH === '/'
+    ? ''
+    : process.env.PUBLIC_BASE_PATH.replace(/\/$/, '')
+  : base
 const { imageHostURL } = themeConfig.preload ?? {}
 const imageConfig = imageHostURL
   ? { image: { domains: [imageHostURL], remotePatterns: [{ protocol: 'https' }] } }
@@ -27,7 +33,7 @@ const imageConfig = imageHostURL
 
 export default defineConfig({
   site,
-  base,
+  base: deploymentBase,
   trailingSlash: 'always', // Not recommended to change
   prefetch: {
     prefetchAll: true,
@@ -98,7 +104,7 @@ export default defineConfig({
             return null
           }
 
-          return code.replace(/url\(\s*(['"]?)\/fonts\//g, `url($1${base}/fonts/`)
+          return code.replace(/url\(\s*(['"]?)\/fonts\//g, `url($1${deploymentBase}/fonts/`)
         },
       },
     ],
