@@ -17,7 +17,7 @@ export const themeConfig: ThemeConfig = {
     url: import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4322',
     // base path
     // root directory for all pages and assets
-    base: '/', // e.g., '/blog', '/docs'
+    base: import.meta.env.PUBLIC_BASE_PATH || '/', // e.g., '/blog', '/docs'
     // favicon url
     // recommended formats: svg, png or ico
     favicon: '/icons/favicon.svg', // or https://example.com/favicon.svg

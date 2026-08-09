@@ -1,0 +1,48 @@
+name: Build and deploy Astro site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
+  repository_dispatch:
+    types: [wordpress-publish]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Build Astro site from WordPress
+        uses: withastro/action@v5
+        with:
+          node-version: 22
+          package-manager: pnpm@10.33.0
+          build-cmd: pnpm run build
+        env:
+          PUBLIC_WORDPRESS_URL: http://43.132.148.205
+          PUBLIC_SITE_URL: https://lanrannnn.github.io/astro-theme-retypeset-master
+          PUBLIC_BASE_PATH: /astro-theme-retypeset-master
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
