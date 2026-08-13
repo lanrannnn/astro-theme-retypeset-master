@@ -62,5 +62,59 @@ const MarginBottom = isPost && themeConfig.comment.enabled
     <GithubCard />
     <MediaEmbed />
     <ImageZoom />
+    <script>
+      function bindWritingDesks() {
+        document.querySelectorAll<HTMLElement>('[data-drag-desk]:not([data-drag-ready])').forEach((desk) => {
+          desk.dataset.dragReady = 'true'
+          let startX = 0
+          let startScroll = 0
+          let dragged = false
+
+          desk.addEventListener('pointerdown', (event) => {
+            if (event.button !== 0) return
+            if (event.target instanceof Element && event.target.closest('a, button')) return
+            startX = event.clientX
+            startScroll = desk.scrollLeft
+            dragged = false
+            desk.setPointerCapture(event.pointerId)
+            desk.classList.add('is-grabbing')
+          })
+
+          desk.addEventListener('pointermove', (event) => {
+            if (!desk.hasPointerCapture(event.pointerId)) return
+            const distance = event.clientX - startX
+            if (Math.abs(distance) > 6) dragged = true
+            if (dragged) desk.scrollLeft = startScroll - distance
+          })
+
+          desk.addEventListener('pointerup', (event) => {
+            if (desk.hasPointerCapture(event.pointerId)) desk.releasePointerCapture(event.pointerId)
+            desk.classList.remove('is-grabbing')
+            if (dragged) {
+              desk.dataset.dragged = 'true'
+              window.setTimeout(() => delete desk.dataset.dragged, 0)
+            }
+          })
+        })
+      }
+
+      document.addEventListener('astro:page-load', bindWritingDesks)
+      bindWritingDesks()
+
+      document.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element)) return
+        const link = event.target.closest<HTMLAnchorElement>('[data-book-link]')
+        if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+        if (link.closest<HTMLElement>('[data-drag-desk]')?.dataset.dragged === 'true') {
+          event.preventDefault()
+          return
+        }
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+        event.preventDefault()
+        link.classList.add('is-opening')
+        window.setTimeout(() => window.location.assign(link.href), 280)
+      }, { capture: true })
+    </script>
   </body>
 </html>

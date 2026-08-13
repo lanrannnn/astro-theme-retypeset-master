@@ -122,7 +122,8 @@ const pageImage = postSlug
   }
 
   function initPalette(doc = document) {
-    doc.documentElement.dataset.palette = localStorage.getItem('palette') === 'blue' ? 'blue' : 'warm'
+    const savedPalette = localStorage.getItem('palette')
+    doc.documentElement.dataset.palette = ['warm', 'blue', 'green'].includes(savedPalette ?? '') ? savedPalette : 'warm'
   }
 
   // Check and init motion preference

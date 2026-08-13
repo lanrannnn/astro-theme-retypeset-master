@@ -13,10 +13,17 @@ const galleries = await getWordPressGalleries()
 ---
 
 <Layout>
-  <section class="heti archive-page">
-    <p class="eyebrow">PHOTOGRAPHY</p>
-    <h1>摄影集</h1>
-    <p class="archive-lead">用光线保存那些无法准确描述的瞬间。</p>
+  <section class="heti archive-page photo-archive">
+    <div class="photo-archive-heading">
+      <div>
+        <p class="eyebrow">PHOTOGRAPHY</p>
+        <h1>摄影集</h1>
+        <p class="archive-lead">用光线保存那些无法准确描述的瞬间。</p>
+      </div>
+      <div class="contact-sheet-mark" aria-hidden="true">
+        <span>35</span><span>45</span><span>lanran</span>
+      </div>
+    </div>
     {galleries.length === 0 ? (
       <p class="empty-state">还没有发布摄影集。在 WordPress 中给文章添加“摄影集”分类后，它会出现在这里。</p>
     ) : (

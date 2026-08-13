@@ -13,15 +13,80 @@ const posts = await getWordPressPosts()
 const collectionPosts = posts.filter(isCollectionPost)
 const galleryPosts = posts.filter(isGalleryPost)
 const regularPosts = posts.filter(post => !isCollectionPost(post) && !isGalleryPost(post))
+const wordpressEditorUrl = import.meta.env.PUBLIC_WORDPRESS_EDITOR_URL || 'http://43.132.148.205/wp-admin/post-new.php'
 ---
 
 <Layout>
-  <section class="home-intro">
-    <p class="eyebrow">PERSONAL ARCHIVE · 2026</p>
-    <h1>写给日落之后的<br /><em>一些话</em></h1>
-    <p class="intro-copy">这里是 lanran 的文字、随笔与影像记录。</p>
-    <div class="intro-rule" />
+  <section class="home-desk-stage" aria-label="lanran 的写作书桌">
+    <div class="desk-top">
+      <div class="desk-heading">
+        <p class="eyebrow">PERSONAL ARCHIVE · 2026</p>
+        <h1>写给日落之后的<br /><em>一些话</em></h1>
+        <p>lanran 的文字、随笔与影像记录。</p>
+      </div>
+
+      <a class="desk-book desk-book-collection" data-desk-draggable="collection" href={getLocalizedPath('/collections/forty-fifth-sunset')}>
+        <span class="book-cover-art" aria-hidden="true" />
+        <span class="book-series">COLLECTION · 045</span>
+        <strong>第四十五次日落</strong>
+        <small>时间、成长与记忆</small>
+        <i>lanran</i>
+      </a>
+      <a class="desk-book desk-book-writing" data-desk-draggable="writing" href={getLocalizedPath('/writing')}>
+        <span class="book-cover-art" aria-hidden="true" />
+        <span class="book-series">NOTEBOOK · 2026</span>
+        <strong>文章与随笔</strong>
+        <small>从今天开始的记录</small>
+        <i>vol. 01</i>
+      </a>
+      <a class="desk-book desk-book-photo" data-desk-draggable="photo" href={getLocalizedPath('/photos')}>
+        <span class="book-cover-art" aria-hidden="true" />
+        <span class="book-series">CONTACT SHEETS</span>
+        <strong>摄影集</strong>
+        <small>光线留下的证据</small>
+        <i>35 mm</i>
+      </a>
+
+      <a class="desk-object desk-pencil-pouch" data-desk-draggable="pouch" href={wordpressEditorUrl} target="_blank" rel="noreferrer" aria-label="打开写作平台">
+        <span class="pouch-zip" />
+        <span class="pencil pencil-orange" /><span class="pencil pencil-blue" /><span class="pencil pencil-green" />
+        <b>PENCIL</b>
+      </a>
+      <button class="desk-object desk-ticket" data-desk-draggable="ticket" type="button" data-object-toggle="ticket" aria-label="查看票根" aria-expanded="false">
+        <span>AFTER SUNSET</span><b>NO. 045</b>
+      </button>
+      <button class="desk-object desk-bookmark" data-desk-draggable="bookmark" data-bookmark-lines="だから僕は音楽を辞めた|ただ君に晴れ|花に亡霊" type="button" data-object-toggle="bookmark" aria-label="更换书签文字" aria-expanded="false">
+        <span class="bookmark-ribbon" aria-hidden="true"><i /><i /></span>
+        <span class="bookmark-copy">だから僕は音楽を辞めた</span>
+      </button>
+
+      <div class="desk-record-player" data-record-player data-desk-draggable="record-player">
+        <button class="record-player-button" type="button" aria-label="打开唱片机" aria-expanded="false">
+          <span class="record-disc" /><span class="record-label">45</span><span class="record-arm" />
+        </button>
+        <div class="record-selector" hidden>
+          <p>SELECT A RECORD</p>
+          <button type="button" data-record-select="夜に浮かぶ月" data-record-src="/music/night-moon.mp3">夜に浮かぶ月</button>
+          <button type="button" data-record-select="雲とギター" data-record-src="/music/cloud-guitar.mp3">雲とギター</button>
+          <button type="button" data-record-select="After Sunset" data-record-src="/music/after-sunset.mp3">After Sunset</button>
+        </div>
+        <span class="record-now-playing" aria-live="polite">选择唱片</span>
+        <audio data-desk-audio preload="none" />
+      </div>
+
+      <button class="desk-coffee-cup" data-desk-draggable="coffee" type="button" aria-label="移动咖啡杯"><span /></button>
+      <span class="desk-coffee-ring" aria-hidden="true" />
+      <span class="desk-pencil-line" aria-hidden="true" />
+      <span class="desk-caption">A SMALL DESK FOR BIG THOUGHTS</span>
+    </div>
   </section>
+
+  <aside class="night-marginalia" aria-label="夜间手记">
+    <span>01 / NIGHT</span>
+    <strong>月光下的文字</strong>
+    <i>listen to the quiet</i>
+    <span>45° 00′</span>
+  </aside>
 
   {collectionPosts.length > 0 && (
     <section class="editorial-feature">
@@ -42,10 +107,11 @@ const regularPosts = posts.filter(post => !isCollectionPost(post) && !isGalleryP
     {regularPosts.length === 0 ? (
       <p class="empty-state">文章正在整理中。</p>
     ) : (
-      <ol class="archive-list">
-        {regularPosts.slice(0, 12).map(post => (
+      <ol class="archive-list home-archive-list">
+        {regularPosts.slice(0, 12).map((post, index) => (
           <li>
             <a href={getLocalizedPath(`/posts/${post.route}`)}>
+              <span class="archive-index">{String(index + 1).padStart(2, '0')}</span>
               <span class="archive-title">{post.title}</span>
               <time datetime={post.date}>{new Date(post.date).toLocaleDateString('zh-CN')}</time>
             </a>
@@ -66,4 +132,139 @@ const regularPosts = posts.filter(post => !isCollectionPost(post) && !isGalleryP
       <span class="feature-count">{galleryPosts.length} 组</span>
     </section>
   )}
+
+  <script>
+    function bindDeskDraggables() {
+      const desk = document.querySelector<HTMLElement>('.desk-top')
+      if (!desk || desk.dataset.dragReady === 'true') return
+      desk.dataset.dragReady = 'true'
+
+      desk.querySelectorAll<HTMLElement>('[data-desk-draggable]').forEach((item) => {
+        const key = `lanran-desk-${item.dataset.deskDraggable}`
+        const saved = localStorage.getItem(key)
+        if (saved) {
+          const [x, y] = saved.split(',').map(Number)
+          if (Number.isFinite(x) && Number.isFinite(y)) {
+            item.dataset.dragX = String(x)
+            item.dataset.dragY = String(y)
+            item.style.translate = `${x}px ${y}px`
+          }
+        }
+
+        item.addEventListener('pointerdown', (event) => {
+          if (event.button !== 0 || event.target instanceof Element && event.target.closest('.record-selector')) return
+          const startX = event.clientX
+          const startY = event.clientY
+          const startOffsetX = Number(item.dataset.dragX || 0)
+          const startOffsetY = Number(item.dataset.dragY || 0)
+          let moved = false
+          let frame = 0
+          item.setPointerCapture(event.pointerId)
+          item.classList.add('is-dragging')
+
+          const move = (moveEvent: PointerEvent) => {
+            if (!item.hasPointerCapture(moveEvent.pointerId)) return
+            const rawX = moveEvent.clientX - startX
+            const rawY = moveEvent.clientY - startY
+            if (Math.hypot(rawX, rawY) > 4) moved = true
+            if (!moved) return
+            moveEvent.preventDefault()
+            cancelAnimationFrame(frame)
+            frame = requestAnimationFrame(() => {
+              const itemRect = item.getBoundingClientRect()
+              const deskRect = desk.getBoundingClientRect()
+              const currentX = Number(item.dataset.dragX || startOffsetX)
+              const currentY = Number(item.dataset.dragY || startOffsetY)
+              const desiredX = startOffsetX + rawX
+              const desiredY = startOffsetY + rawY
+              const minX = currentX + deskRect.left - itemRect.left
+              const maxX = currentX + deskRect.right - itemRect.right
+              const minY = currentY + deskRect.top - itemRect.top
+              const maxY = currentY + deskRect.bottom - itemRect.bottom
+              const x = Math.round(Math.max(minX, Math.min(desiredX, maxX)))
+              const y = Math.round(Math.max(minY, Math.min(desiredY, maxY)))
+              item.dataset.dragX = String(x)
+              item.dataset.dragY = String(y)
+              item.style.translate = `${x}px ${y}px`
+            })
+          }
+
+          const end = (endEvent: PointerEvent) => {
+            item.removeEventListener('pointermove', move)
+            item.removeEventListener('pointerup', end)
+            item.removeEventListener('pointercancel', end)
+            cancelAnimationFrame(frame)
+            if (item.hasPointerCapture(endEvent.pointerId)) item.releasePointerCapture(endEvent.pointerId)
+            item.classList.remove('is-dragging')
+            if (moved) {
+              item.dataset.dragged = 'true'
+              localStorage.setItem(key, `${item.dataset.dragX || 0},${item.dataset.dragY || 0}`)
+              window.setTimeout(() => delete item.dataset.dragged, 0)
+            }
+          }
+
+          item.addEventListener('pointermove', move)
+          item.addEventListener('pointerup', end)
+          item.addEventListener('pointercancel', end)
+        })
+      })
+    }
+
+    document.addEventListener('astro:page-load', bindDeskDraggables)
+    bindDeskDraggables()
+
+    document.addEventListener('click', (event) => {
+      if (!(event.target instanceof Element)) return
+      const dragged = event.target.closest<HTMLElement>('[data-desk-draggable][data-dragged="true"]')
+      if (dragged) {
+        event.preventDefault()
+        delete dragged.dataset.dragged
+        return
+      }
+      const object = event.target.closest<HTMLElement>('[data-object-toggle]')
+      if (object) {
+        const expanded = object.getAttribute('aria-expanded') === 'true'
+        object.setAttribute('aria-expanded', String(!expanded))
+        object.classList.toggle('is-open', !expanded)
+        if (object.matches('.desk-bookmark')) {
+          const lines = (object.dataset.bookmarkLines || '').split('|').filter(Boolean)
+          const current = Number(localStorage.getItem('lanran-bookmark-line') || 0)
+          const next = lines.length ? (current + 1) % lines.length : 0
+          object.querySelector('.bookmark-copy')?.replaceChildren(document.createTextNode(lines[next] || ''))
+          localStorage.setItem('lanran-bookmark-line', String(next))
+        }
+      }
+
+      const player = event.target.closest<HTMLElement>('[data-record-player]')
+      if (!player) return
+      const button = player.querySelector<HTMLButtonElement>('.record-player-button')
+      const selector = player.querySelector<HTMLElement>('.record-selector')
+      if (event.target.closest('.record-player-button')) {
+        const expanded = button?.getAttribute('aria-expanded') === 'true'
+        button?.setAttribute('aria-expanded', String(!expanded))
+        if (selector) selector.hidden = expanded
+        player.classList.toggle('is-open', !expanded)
+      }
+      const record = event.target.closest<HTMLButtonElement>('[data-record-select]')
+      if (record) {
+        const audio = player.querySelector<HTMLAudioElement>('[data-desk-audio]')
+        const status = player.querySelector<HTMLElement>('.record-now-playing')
+        player.querySelector('.record-label')?.replaceChildren(document.createTextNode('♪'))
+        player.classList.add('is-playing')
+        player.querySelector('.record-selector')?.setAttribute('data-playing', record.dataset.recordSelect ?? '')
+        if (audio && record.dataset.recordSrc) {
+          audio.src = record.dataset.recordSrc
+          audio.play().then(() => {
+            if (status) status.textContent = record.dataset.recordSelect || '播放中'
+          }).catch(() => {
+            player.classList.remove('is-playing')
+            if (status) status.textContent = '请先放入 MP3'
+          })
+        }
+        if (selector) selector.hidden = true
+        button?.setAttribute('aria-expanded', 'false')
+        player.classList.remove('is-open')
+      }
+    })
+  </script>
 </Layout>

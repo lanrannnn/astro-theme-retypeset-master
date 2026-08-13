@@ -19,16 +19,19 @@ const nextUrl = supportedLangs.length > 0
       <LanguageSwitcherIcon aria-hidden="true" fill="currentColor" />
     </a>
   )}
-  <button id="palette-toggle-button" class="palette-toggle" aria-label="切换暖色与蓝色色调" title="切换色调">
+  <button id="palette-toggle-button" class="palette-toggle" aria-label="切换暖色、蓝色与绿色调" title="切换色调">
     <span class="palette-dot warm-dot" />
     <span class="palette-dot blue-dot" />
+    <span class="palette-dot green-dot" />
   </button>
 </div>
 
 <script>
 function handlePaletteToggle(event: MouseEvent) {
   if (!(event.target instanceof Element) || !event.target.closest('#palette-toggle-button')) return
-  const nextPalette = document.documentElement.dataset.palette === 'blue' ? 'warm' : 'blue'
+  const palettes = ['warm', 'blue', 'green']
+  const currentIndex = palettes.indexOf(document.documentElement.dataset.palette ?? 'warm')
+  const nextPalette = palettes[(currentIndex + 1) % palettes.length]
   document.documentElement.dataset.palette = nextPalette
   localStorage.setItem('palette', nextPalette)
   document.dispatchEvent(new Event('theme-changed'))
