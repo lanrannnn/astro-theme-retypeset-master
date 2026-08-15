@@ -1,6 +1,6 @@
 ---
 import { getLangRouteParam } from '@/i18n/lang'
-import { getLocalizedPath } from '@/i18n/path'
+import LibraryShelf from '@/components/LibraryShelf.astro'
 import Layout from '@/layouts/Layout.astro'
 import { getWordPressCollection, getWordPressCollections } from '@/utils/wordpress'
 
@@ -19,24 +19,6 @@ if (!collection) throw new Error(`WordPress collection not found: ${slug}`)
     <p class="eyebrow">COLLECTION · NO. 45</p>
     <h1>{collection.title}</h1>
     <p class="archive-lead">{collection.description}</p>
-    <div class="writing-desk" data-drag-desk>
-      <div class="desk-particles" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div>
-      <span class="desk-caption">READING DESK / DRAG TO BROWSE</span>
-      <span class="desk-object desk-ticket" aria-hidden="true">NO. 045</span>
-      <span class="desk-object desk-tape" aria-hidden="true" />
-      <span class="desk-object desk-ring" aria-hidden="true" />
-      <span class="desk-object desk-leaf" aria-hidden="true" />
-      <ol class="archive-list numbered-list book-shelf" aria-label="可拖动文集书桌">
-        {collection.posts.map((post, index) => (
-          <li>
-            <a class="shelf-book generated-cover" style={`--cover-image: url('/images/covers/${post.route}.webp')`} data-book-link data-astro-reload href={getLocalizedPath(`/writing/${post.route}`)}>
-              <span class="list-index">{String(index + 1).padStart(2, '0')}</span>
-              <span class="archive-title">{post.title}</span>
-              <time datetime={post.date}>{new Date(post.date).toLocaleDateString('zh-CN')}</time>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </div>
+    <LibraryShelf posts={collection.posts} label={`${collection.title}书架`} />
   </article>
 </Layout>

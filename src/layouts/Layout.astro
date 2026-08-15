@@ -62,38 +62,5 @@ const MarginBottom = isPost && themeConfig.comment.enabled
     <GithubCard />
     <MediaEmbed />
     <ImageZoom />
-    <script>
-      function bindWritingDesks() {
-        document.querySelectorAll<HTMLElement>('[data-drag-desk]:not([data-drag-ready])').forEach((desk) => {
-          desk.dataset.dragReady = 'true'
-          let startX = 0
-          let startScroll = 0
-
-          desk.addEventListener('pointerdown', (event) => {
-            if (event.button !== 0) return
-            if (event.target instanceof Element && event.target.closest('a, button')) return
-            startX = event.clientX
-            startScroll = desk.scrollLeft
-            dragged = false
-            desk.setPointerCapture(event.pointerId)
-            desk.classList.add('is-grabbing')
-          })
-
-          desk.addEventListener('pointermove', (event) => {
-            if (!desk.hasPointerCapture(event.pointerId)) return
-            const distance = event.clientX - startX
-            if (Math.abs(distance) > 6) desk.scrollLeft = startScroll - distance
-          })
-
-          desk.addEventListener('pointerup', (event) => {
-            if (desk.hasPointerCapture(event.pointerId)) desk.releasePointerCapture(event.pointerId)
-            desk.classList.remove('is-grabbing')
-          })
-        })
-      }
-
-      document.addEventListener('astro:page-load', bindWritingDesks)
-      bindWritingDesks()
-    </script>
   </body>
 </html>

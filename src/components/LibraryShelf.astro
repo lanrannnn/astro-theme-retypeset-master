@@ -1,0 +1,88 @@
+---
+import { getLocalizedPath } from '@/i18n/path'
+
+interface ShelfPost {
+  route: string
+  title: string
+  date: string
+}
+
+interface Props {
+  posts: ShelfPost[]
+  label: string
+}
+
+const { posts, label } = Astro.props
+---
+
+<div class="library-shelf" data-library-shelf>
+  <span class="library-shelf-label">{label}</span>
+  <ol class="archive-list library-books" aria-label={label}>
+    {posts.map((post, index) => (
+      <li>
+        <a
+          class="library-book"
+          style={`--cover-image: url('/images/covers/${post.route}.webp')`}
+          data-shelf-book
+          data-astro-reload
+          href={getLocalizedPath(`/writing/${post.route}`)}
+          aria-expanded="false"
+        >
+          <span class="book-spine">
+            <span class="book-spine-index">{String(index + 1).padStart(2, '0')}</span>
+            <span class="book-spine-title">{post.title}</span>
+          </span>
+          <span class="book-cover-face" aria-hidden="true">
+            <span class="book-cover-number">{String(index + 1).padStart(2, '0')}</span>
+            <span class="book-cover-title">{post.title}</span>
+            <time datetime={post.date}>{new Date(post.date).toLocaleDateString('zh-CN')}</time>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ol>
+  <span class="library-shelf-board" aria-hidden="true" />
+</div>
+
+<script>
+  function bindLibraryShelves() {
+    document.querySelectorAll<HTMLElement>('[data-library-shelf]:not([data-shelf-ready])').forEach((shelf) => {
+      shelf.dataset.shelfReady = 'true'
+      const books = Array.from(shelf.querySelectorAll<HTMLAnchorElement>('[data-shelf-book]'))
+
+      const closeBooks = (except?: HTMLAnchorElement) => {
+        books.forEach((book) => {
+          if (book === except) return
+          book.classList.remove('is-selected')
+          book.parentElement?.classList.remove('is-selected')
+          book.setAttribute('aria-expanded', 'false')
+        })
+      }
+
+      books.forEach((book) => {
+        book.addEventListener('click', (event) => {
+          if (book.classList.contains('is-selected')) return
+          event.preventDefault()
+          closeBooks(book)
+          book.classList.add('is-selected')
+          book.parentElement?.classList.add('is-selected')
+          book.setAttribute('aria-expanded', 'true')
+          book.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+        })
+      })
+
+      shelf.addEventListener('click', (event) => {
+        if (event.target instanceof Element && event.target.closest('[data-shelf-book]')) return
+        closeBooks()
+      })
+
+      shelf.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return
+        closeBooks()
+      })
+    })
+  }
+
+  bindLibraryShelves()
+  document.addEventListener('astro:page-load', bindLibraryShelves)
+</script>
