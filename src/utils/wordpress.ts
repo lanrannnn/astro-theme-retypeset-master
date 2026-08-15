@@ -120,7 +120,9 @@ function hasCategory(post: WordPressPost, slugs: string[]) {
 
 export async function getWordPressCollections(): Promise<WordPressCollection[]> {
   const posts = await getWordPressPosts()
-  const collectionPosts = posts.filter(post => hasCategory(post, ['forty-fifth-sunset', 'di-si-wu-ci-ri-luo', '第四十五次日落']))
+  const collectionPosts = posts
+    .filter(post => hasCategory(post, ['forty-fifth-sunset', 'di-si-wu-ci-ri-luo', '第四十五次日落']))
+    .sort((a, b) => a.id - b.id)
   return collectionPosts.length > 0 ? [{
     slug: 'forty-fifth-sunset',
     title: '第四十五次日落',

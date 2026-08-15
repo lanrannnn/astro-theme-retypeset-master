@@ -286,54 +286,28 @@ def generate_cover(post_id: str, title: str, index: int) -> Path:
     canvas = Image.new("RGBA", (WIDTH, HEIGHT), (*paper, 255))
     add_paper_texture(canvas, rng, 0.11)
 
-    layout = index % 5
-    if layout == 0:
-        photo_box = (105, 245, 465, 575)
-        paper_box = (58, 420, 335, 680)
-    elif layout == 1:
-        photo_box = (190, 175, 515, 535)
-        paper_box = (65, 470, 370, 705)
-    elif layout == 2:
-        photo_box = (70, 310, 390, 655)
-        paper_box = (300, 215, 545, 505)
-    elif layout == 3:
-        photo_box = (145, 205, 510, 495)
-        paper_box = (90, 515, 455, 700)
-    else:
-        photo_box = (80, 220, 350, 565)
-        paper_box = (275, 390, 535, 675)
-
-    paste_torn_layer(canvas, rng, paper_box, secondary, alpha=230)
+    # One small, tactile cluster on a mostly empty sheet. The page title is
+    # rendered by the site, so the bitmap stays a quiet cover image.
+    layouts = [
+        ((84, 238, 322, 508), (302, 405, 358, 652)),
+        ((275, 172, 512, 442), (132, 340, 188, 588)),
+        ((92, 360, 330, 630), (342, 224, 398, 472)),
+        ((245, 258, 483, 528), (112, 178, 168, 426)),
+    ]
+    photo_box, strip_box = layouts[index % len(layouts)]
     paste_photo(canvas, rng, photo_box, ink)
-    draw_theme_motif(canvas, rng, theme_name, ink, accent)
-
-    strip_left = rng.randint(55, 420)
-    strip_top = rng.randint(190, 585)
-    strip_width = rng.randint(62, 115)
     paste_torn_layer(
         canvas,
         rng,
-        (strip_left, strip_top, strip_left + strip_width, strip_top + rng.randint(180, 310)),
+        strip_box,
         accent,
         alpha=245,
     )
 
-    if index % 2 == 0:
-        draw_tape(canvas, rng, (rng.randint(160, 420), rng.randint(205, 650)), rng.uniform(-11, 11))
-    if index % 3 == 0:
-        draw_tape(canvas, rng, (rng.randint(160, 430), rng.randint(205, 650)), rng.uniform(-18, 18))
-
     draw = ImageDraw.Draw(canvas, "RGBA")
-    stamp_x = rng.randint(390, 500)
-    stamp_y = rng.randint(90, 180)
-    stamp_r = rng.randint(34, 54)
-    draw.ellipse((stamp_x - stamp_r, stamp_y - stamp_r, stamp_x + stamp_r, stamp_y + stamp_r), outline=(*ink, 90), width=3)
-    draw.ellipse((stamp_x - stamp_r + 8, stamp_y - stamp_r + 8, stamp_x + stamp_r - 8, stamp_y + stamp_r - 8), outline=(*ink, 55), width=1)
-    for _ in range(5):
-        y = stamp_y - 30 + rng.randint(0, 60)
-        draw.line((stamp_x - 70, y, stamp_x + 70, y + rng.randint(-3, 3)), fill=(*ink, 45), width=1)
-
-    draw_microtext(canvas, rng, post_id, title, ink)
+    font_small = ImageFont.truetype(str(FONT_REGULAR), 13)
+    draw.text((42, 42), f"ARCHIVE / {post_id}", font=font_small, fill=(*ink, 145))
+    draw.line((42, 66, 148, 66), fill=(*ink, 90), width=1)
     canvas = canvas.convert("RGB")
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     output = OUTPUT_DIR / f"{post_id}.webp"

@@ -198,8 +198,9 @@ const wordpressEditorUrl = import.meta.env.PUBLIC_WORDPRESS_EDITOR_URL || 'http:
             item.classList.remove('is-dragging')
             if (moved) {
               item.dataset.dragged = 'true'
+              item.dataset.suppressClickUntil = String(Date.now() + 700)
               localStorage.setItem(key, `${item.dataset.dragX || 0},${item.dataset.dragY || 0}`)
-              window.setTimeout(() => delete item.dataset.dragged, 0)
+              window.setTimeout(() => delete item.dataset.dragged, 700)
             }
           }
 
@@ -215,8 +216,8 @@ const wordpressEditorUrl = import.meta.env.PUBLIC_WORDPRESS_EDITOR_URL || 'http:
 
     document.addEventListener('click', (event) => {
       if (!(event.target instanceof Element)) return
-      const dragged = event.target.closest<HTMLElement>('[data-desk-draggable][data-dragged="true"]')
-      if (dragged) {
+      const dragged = event.target.closest<HTMLElement>('[data-desk-draggable]')
+      if (dragged && Number(dragged.dataset.suppressClickUntil || 0) > Date.now()) {
         event.preventDefault()
         delete dragged.dataset.dragged
         return
