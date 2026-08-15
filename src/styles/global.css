@@ -1017,7 +1017,7 @@ html[data-palette='green'] .desk-top { background-image: repeating-linear-gradie
   transform: rotate(-2.5deg);
 }
 .desk-heading::after { position: absolute; top: -0.45rem; left: 37%; width: 4.7rem; height: 1rem; content: ''; background: rgb(223 202 155 / 72%); transform: rotate(2deg); }
-.desk-heading h1 { font-family: EarlySummer, STKaiti, KaiTi, serif; font-size: 2.1rem; line-height: 1.08; }
+.desk-heading h1 { font-family: LanranSans, sans-serif; font-size: 2.1rem; line-height: 1.08; }
 
 .desk-book {
   background-color: var(--book-base);
@@ -1061,7 +1061,7 @@ html[data-palette='green'] .desk-top { background-image: repeating-linear-gradie
   max-width: 7.4em;
   padding: 0.4rem 0.25rem;
   color: #34231a;
-  font-family: EarlySummer, STKaiti, KaiTi, serif;
+  font-family: LanranSans, sans-serif;
   font-size: 1.6rem;
   line-height: 1.18;
   text-align: center;
@@ -1245,7 +1245,7 @@ html[data-palette='green'] .book-shelf li:nth-child(3n + 1) .shelf-book { --coll
   padding: 0.42rem 0.35rem;
   background: rgb(244 232 199 / 94%);
   color: #38271e;
-  font-family: EarlySummer, STKaiti, KaiTi, serif;
+  font-family: LanranSans, sans-serif;
   font-size: 0.92rem;
   font-weight: 500;
   line-height: 1.35;
@@ -1255,7 +1255,6 @@ html[data-palette='green'] .book-shelf li:nth-child(3n + 1) .shelf-book { --coll
   box-shadow: 0.14rem 0.18rem 0 rgb(40 24 16 / 14%);
   transform: rotate(-0.8deg);
 }
-.book-shelf [data-book-link] { touch-action: none; }
 .book-shelf li:nth-child(4n + 2) .generated-cover .archive-title { transform: rotate(0.7deg); background: rgb(235 232 207 / 94%); }
 .book-shelf li:nth-child(4n + 3) .generated-cover .archive-title { transform: rotate(-0.35deg); background: rgb(240 225 187 / 94%); }
 .book-shelf li:nth-child(4n) .generated-cover .archive-title { transform: rotate(1deg); background: rgb(229 233 213 / 94%); }
@@ -1285,54 +1284,26 @@ html[data-palette='green'] .book-shelf li:nth-child(3n + 1) .shelf-book { --coll
 .desk-bookmark .bookmark-copy { position: relative; z-index: 2; display: block; padding: 1.7rem 0.6rem 0.8rem; font-family: KaiTi, STKaiti, EarlySummer, serif; font-size: 0.86rem; line-height: 1.35; writing-mode: vertical-rl; text-shadow: 0.08rem 0.08rem 0 rgb(255 255 255 / 24%); }
 .desk-bookmark .bookmark-ribbon {
   position: absolute;
-  top: -1.25rem;
+  top: -1.05rem;
   left: 50%;
   z-index: 3;
   display: block;
-  width: 2.4rem;
-  height: 4.9rem;
+  width: 0.7rem;
+  height: 4.5rem;
   padding: 0;
   writing-mode: horizontal-tb;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotate(3deg);
   pointer-events: none;
 }
-.desk-bookmark .bookmark-ribbon::before {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 1.25rem;
-  height: 1.55rem;
-  content: '';
-  border: 0.24rem solid var(--bookmark-ribbon);
-  border-bottom-width: 0.16rem;
-  border-radius: 58% 58% 48% 48%;
-  box-shadow: inset 0.08rem 0.08rem 0 rgb(255 255 255 / 14%);
-  transform: translateX(-50%) rotate(5deg);
-}
-.desk-bookmark .bookmark-ribbon::after {
-  position: absolute;
-  top: 1.12rem;
-  left: 50%;
-  width: 0.72rem;
-  height: 0.52rem;
-  content: '';
-  border-radius: 48% 52% 42% 58%;
-  background: var(--bookmark-ribbon);
-  box-shadow: inset 0.12rem 0.08rem 0 rgb(255 255 255 / 16%), 0.08rem 0.1rem 0 rgb(35 17 8 / 16%);
-  transform: translateX(-50%) rotate(-4deg);
-}
+.desk-bookmark .bookmark-ribbon::before,
+.desk-bookmark .bookmark-ribbon::after { content: none; }
 .desk-bookmark .bookmark-ribbon i {
   position: absolute;
-  top: 1.42rem;
-  left: 50%;
-  width: 0.54rem;
-  height: 3.45rem;
+  inset: 0;
   background: linear-gradient(90deg, rgb(255 255 255 / 14%), transparent 35%), var(--bookmark-ribbon);
-  clip-path: polygon(4% 0, 96% 0, 100% 100%, 53% 88%, 0 100%);
-  transform-origin: top;
+  clip-path: polygon(3% 0, 97% 0, 100% 100%, 50% 88%, 0 100%);
+  box-shadow: 0.08rem 0.12rem 0 rgb(35 17 8 / 15%);
 }
-.desk-bookmark .bookmark-ribbon i:first-child { transform: translateX(-82%) rotate(5deg); }
-.desk-bookmark .bookmark-ribbon i:last-child { height: 3.15rem; transform: translateX(-18%) rotate(-7deg); filter: brightness(0.84); }
 html[data-palette='warm'] { --bookmark-paper: #eadbb8; --bookmark-ink: #4b3327; --bookmark-ribbon: #7d3940; }
 html[data-palette='blue'] { --bookmark-paper: #e2e5df; --bookmark-ink: #314452; --bookmark-ribbon: #526d7e; }
 html[data-palette='green'] { --bookmark-paper: #e4dfbd; --bookmark-ink: #33493b; --bookmark-ribbon: #5f725a; }
@@ -1360,8 +1331,6 @@ html[data-palette='green'] { --article-paper: #e8ead9; --article-rule: rgb(55 10
 @media (max-width: 640px) {
   .desk-bookmark { width: 2.45rem; height: 9.2rem; }
   .desk-bookmark .bookmark-copy { padding: 1.35rem 0.4rem 0.5rem; font-size: 0.64rem; }
-  .desk-bookmark .bookmark-ribbon { top: -1.75rem; width: 1.55rem; height: 3.5rem; border-width: 0.22rem; }
-  .desk-bookmark .bookmark-ribbon::after { top: 1.05rem; width: 0.58rem; }
-  .desk-bookmark .bookmark-ribbon i { top: 1.35rem; width: 0.45rem; height: 2.1rem; }
+  .desk-bookmark .bookmark-ribbon { top: -0.8rem; width: 0.55rem; height: 3.3rem; }
   .wordpress-article { margin-inline: -1.25rem; padding: 2.6rem 1.25rem 3.5rem; }
 }
