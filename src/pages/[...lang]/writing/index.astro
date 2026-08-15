@@ -27,7 +27,7 @@ const posts = (await getWordPressPosts()).filter(post => !isGalleryPost(post))
       <ol class="archive-list book-shelf" aria-label="可拖动文章书桌">
         {posts.map((post, index) => (
           <li>
-            <a class="shelf-book generated-cover" style={`--cover-image: url('/images/covers/${post.route}.webp')`} data-book-link data-astro-reload href={getLocalizedPath(`/posts/${post.route}`)}>
+            <a class="shelf-book generated-cover" style={`--cover-image: url('/images/covers/${post.route}.webp')`} data-book-link data-astro-reload href={getLocalizedPath(`/writing/${post.route}`)}>
               <span class="list-index">{String(index + 1).padStart(2, '0')}</span>
               <span class="archive-title">{post.title}</span>
               <time datetime={post.date}>{new Date(post.date).toLocaleDateString('zh-CN')}</time>

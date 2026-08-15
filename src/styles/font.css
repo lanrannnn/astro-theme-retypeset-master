@@ -1,3 +1,17 @@
+/* Site title font: clear Chinese glyphs at small book-cover sizes. */
+@font-face {
+  font-family: "LanranSans";
+  src: url("/fonts/NotoSansSC-Regular.otf") format("opentype");
+  font-display: swap;
+  font-weight: 400;
+}
+@font-face {
+  font-family: "LanranSans";
+  src: url("/fonts/NotoSansSC-Bold.otf") format("opentype");
+  font-display: swap;
+  font-weight: 600 800;
+}
+
 /* Snell Roundhand Static Font */
 @font-face {
   font-family: "Snell-Bold";

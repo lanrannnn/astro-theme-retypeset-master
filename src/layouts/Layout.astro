@@ -92,8 +92,8 @@ const MarginBottom = isPost && themeConfig.comment.enabled
             desk.classList.remove('is-grabbing')
             if (dragged) {
               desk.dataset.dragged = 'true'
-              desk.dataset.suppressClickUntil = String(Date.now() + 800)
-              window.setTimeout(() => delete desk.dataset.dragged, 800)
+              desk.dataset.suppressClickUntil = String(Date.now() + 1500)
+              window.setTimeout(() => delete desk.dataset.dragged, 1500)
             }
           })
 
@@ -133,9 +133,9 @@ const MarginBottom = isPost && themeConfig.comment.enabled
               cancelAnimationFrame(frame)
               book.classList.remove('is-dragging')
               if (moved) {
-                book.dataset.suppressClickUntil = String(Date.now() + 800)
+                book.dataset.suppressClickUntil = String(Date.now() + 1500)
                 localStorage.setItem(key, book.style.translate || '0px 0px')
-                window.setTimeout(() => delete book.dataset.suppressClickUntil, 800)
+                window.setTimeout(() => delete book.dataset.suppressClickUntil, 1500)
               }
             }
             book.addEventListener('pointerup', endBookDrag)
