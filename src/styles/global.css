@@ -1056,6 +1056,7 @@ html[data-palette='green'] .desk-top { background-image: repeating-linear-gradie
 }
 .desk-book .book-series { padding-bottom: 0.45rem; border-bottom: 1px solid currentColor; }
 .desk-book strong {
+  width: 100%;
   align-self: center;
   max-width: 7.4em;
   padding: 0.4rem 0.25rem;
@@ -1065,6 +1066,9 @@ html[data-palette='green'] .desk-top { background-image: repeating-linear-gradie
   line-height: 1.18;
   text-align: center;
   text-shadow: none;
+  border: 1px solid rgb(67 48 33 / 24%);
+  background: rgb(244 232 196 / 94%);
+  box-shadow: 0.14rem 0.18rem 0 rgb(35 17 8 / 13%);
 }
 .desk-book-writing strong { border-color: rgb(46 36 30 / 24%); }
 .desk-book-collection { top: 18rem; left: 22%; --book-base: var(--desk-book-one); --book-print: linear-gradient(135deg, transparent 0 46%, rgb(255 241 208 / 12%) 46.5% 49%, transparent 49.5%); --book-cover-image: url('/images/desk-books/forty-fifth-sunset.webp'); --book-cover-opacity: 0.76; }
@@ -1251,6 +1255,7 @@ html[data-palette='green'] .book-shelf li:nth-child(3n + 1) .shelf-book { --coll
   box-shadow: 0.14rem 0.18rem 0 rgb(40 24 16 / 14%);
   transform: rotate(-0.8deg);
 }
+.book-shelf [data-book-link] { touch-action: none; }
 .book-shelf li:nth-child(4n + 2) .generated-cover .archive-title { transform: rotate(0.7deg); background: rgb(235 232 207 / 94%); }
 .book-shelf li:nth-child(4n + 3) .generated-cover .archive-title { transform: rotate(-0.35deg); background: rgb(240 225 187 / 94%); }
 .book-shelf li:nth-child(4n) .generated-cover .archive-title { transform: rotate(1deg); background: rgb(229 233 213 / 94%); }

@@ -229,14 +229,10 @@ def make_photo_fragment(rng: random.Random, size: tuple[int, int], dark: tuple[i
     )).convert("RGBA")
     draw = ImageDraw.Draw(photo, "RGBA")
     horizon = rng.randint(h // 3, h * 2 // 3)
-    draw.rectangle((0, horizon, w, h), fill=(17, 25, 28, 70))
-    for offset in range(-w, w, rng.randint(24, 42)):
-        draw.line((offset, h, offset + w // 2, 0), fill=(238, 232, 205, 34), width=2)
-    if rng.random() > 0.45:
-        cx = rng.randint(w // 4, w * 3 // 4)
-        cy = rng.randint(h // 4, h * 3 // 4)
-        for radius in range(16, min(w, h) // 3, 18):
-            draw.ellipse((cx - radius, cy - radius // 2, cx + radius, cy + radius // 2), outline=(245, 235, 210, 46), width=2)
+    draw.rectangle((0, horizon, w, h), fill=(17, 25, 28, 42))
+    cx = rng.randint(w // 4, w * 3 // 4)
+    cy = rng.randint(h // 4, h * 3 // 4)
+    draw.ellipse((cx - w // 5, cy - h // 7, cx + w // 5, cy + h // 7), outline=(245, 235, 210, 34), width=2)
     return photo
 
 
